@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import static com.write.reco.advice.response.ResponseCode.*;
@@ -43,5 +45,10 @@ public class UserController {
         httpHeaders.add("Authorization", "Bearer " + token.getAccessToken());
 
         return ResponseEntity.ok().headers(httpHeaders).build();
+    }
+    @DeleteMapping
+    public ResponseEntity<?> withdraw(@AuthenticationPrincipal User auth) {
+        userService.withdraw(auth);
+        return new ResponseEntity<>(Response.create(SUCCESS_DELETE_USER, null), SUCCESS_DELETE_USER.getHttpStatus());
     }
 }

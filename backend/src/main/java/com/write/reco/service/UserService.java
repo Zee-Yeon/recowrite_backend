@@ -57,9 +57,14 @@ public class UserService {
                 });
     }
 
-    public User userDetail(org.springframework.security.core.userdetails.User user) {
-        String email = user.getUsername();
+    public User userDetail(org.springframework.security.core.userdetails.User auth) {
+        String email = auth.getUsername();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+    }
+
+    public void withdraw(org.springframework.security.core.userdetails.User auth) {
+        User user = userDetail(auth);
+//        user.
     }
 }
