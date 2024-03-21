@@ -1,0 +1,8 @@
+file:
+  dir: C:\Users\user\Desktop\RecoWRITE_Server\src\main\resources\static\image\
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
