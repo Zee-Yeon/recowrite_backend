@@ -1,16 +1,16 @@
 package com.write.reco.dto.request;
 
-import com.write.reco.domain.User;
-import com.write.reco.domain.constant.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @AllArgsConstructor
 @Getter
 public class UserRequest {
 
     @NotNull
+    @UniqueElements
     private String email;
 
     @NotNull
