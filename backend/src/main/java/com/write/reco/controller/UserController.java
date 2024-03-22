@@ -6,7 +6,6 @@ import com.write.reco.dto.request.UserLoginRequest;
 import com.write.reco.dto.request.UserRequest;
 import com.write.reco.dto.response.JwtResponse;
 import com.write.reco.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
