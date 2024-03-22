@@ -1,10 +1,7 @@
 package com.write.reco.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
@@ -26,6 +23,7 @@ public class Image extends AuditingFields {
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
