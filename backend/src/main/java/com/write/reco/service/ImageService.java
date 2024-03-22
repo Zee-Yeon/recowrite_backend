@@ -31,28 +31,36 @@ public class ImageService {
     private static final String FLASK_PREDICT_URL = "http://10.125.121.181:5000/image/upload" ;
     private final Environment environment;
     private final UserService userService;
+    private final ImageRepository imageRepository;
 
     public ResponseEntity<JsonNode> uploadImage(User auth, MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new CustomException(ResponseCode.NOT_FOUND_FILE);
         }
 
-        com.write.reco.domain.User user = userService.userDetail(auth);
-        System.out.println("user = " + user.getEmail());
-
-        String directoryPath = environment.getProperty("file.dir");
-        String filename = filename(file);
-        String fullPath = directoryPath + filename;
-
+        String fullPath = filename(auth, file);
         file.transferTo(new File(fullPath));
 
         return sendImage(fullPath);
     }
 
-    // 1. UUID 사용한 파일명
-    private String filename(MultipartFile file) {
+    // 1. 파일명 수정 + 저장
+    private String filename(User auth, MultipartFile file) {
+        String directoryPath = environment.getProperty("file.dir");
         UUID uuid = UUID.randomUUID();
-        return uuid + "_" + file.getOriginalFilename();
+
+        String filename = uuid + "_" + file.getOriginalFilename();
+        String fullPath = directoryPath + filename;
+
+        com.write.reco.domain.User user = userService.userDetail(auth);
+        Image image = Image.builder()
+                .user(user)
+                .fileName(filename)
+                .path(fullPath)
+                .build();
+        imageRepository.save(image);
+
+        return fullPath;
     }
 
     // 2. flask 영수증 이미지 전송 -> front 전송
@@ -70,8 +78,12 @@ public class ImageService {
         HttpEntity<LinkedMultiValueMap<String, Object>> http = new HttpEntity<>(body, headers);
 
         ResponseEntity<JsonNode> entity = restTemplate.postForEntity(FLASK_PREDICT_URL, http, JsonNode.class);
-
         return entity;
+    }
+
+    public Image checkUploader(String filename) {
+        return imageRepository.findByFileName(filename)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FILE));
     }
 }
 
