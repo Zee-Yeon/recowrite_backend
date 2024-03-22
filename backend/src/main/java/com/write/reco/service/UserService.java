@@ -49,7 +49,7 @@ public class UserService {
         return token;
     }
 
-
+    @Transactional(readOnly = true)
     public void duplication(String email) {
         userRepository.findByEmail(email)
                 .ifPresent(user -> {
@@ -57,6 +57,7 @@ public class UserService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public User userDetail(org.springframework.security.core.userdetails.User auth) {
         String email = auth.getUsername();
         return userRepository.findByEmail(email)
@@ -65,6 +66,6 @@ public class UserService {
 
     public void withdraw(org.springframework.security.core.userdetails.User auth) {
         User user = userDetail(auth);
-//        user.
+        user.setStatus(Status.DELETED);
     }
 }
