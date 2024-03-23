@@ -4,10 +4,15 @@ import com.write.reco.domain.Image;
 import com.write.reco.domain.Item;
 import com.write.reco.domain.Receipt;
 import com.write.reco.dto.request.ReceiptRequest;
+import com.write.reco.dto.response.ReceiptResponse;
 import com.write.reco.repository.ItemRepository;
 import com.write.reco.repository.ReceiptRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +32,7 @@ public class ReceiptService {
     private final ReceiptRepository receiptRepository;
     private final ImageService imageService;
     private final ItemRepository itemRepository;
+    private final UserService userService;
 
     public void saveReceipt(User auth, ReceiptRequest receiptRequest) throws MalformedURLException {
 
@@ -53,6 +59,14 @@ public class ReceiptService {
                     .build();
             itemRepository.save(item);
         }
+    }
+
+    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
+        com.write.reco.domain.User user = userService.userDetail(auth);
+        String email = user.getEmail();
+
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
+        return receiptRepository.findReceiptByImageByAndCompany(email, company, pageable).map(ReceiptResponse::dto);
     }
 
     private Image filename(String fullPath) throws MalformedURLException {
