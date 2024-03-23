@@ -21,6 +21,8 @@ public enum ResponseCode {
     SUCCESS_RECEIPT_OCR(successCode(), HttpStatus.OK, "영수증이 성공적으로 인식되었습니다."),
     SUCCESS_SAVE_RECEIPT(successCode(), HttpStatus.OK, "영수증이 성공적으로 저장되었습니다."),
 
+    // RECEIPT_SUCCESS
+    GET_RECEIPTS(successCode(), HttpStatus.OK, "영수증이 성공적으로 조회되었습니다."),
 
     // 400
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
