@@ -19,6 +19,7 @@ public class Image extends AuditingFields {
 
     private String path;
 
+    @Setter
     @OneToOne
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
