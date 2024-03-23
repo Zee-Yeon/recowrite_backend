@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Receipt extends AuditingFields{
+public class Receipt extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
