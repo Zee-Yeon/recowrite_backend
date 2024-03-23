@@ -24,13 +24,13 @@ public class Receipt extends AuditingFields{
     @Column(name = "receipt_id")
     private Long id;
 
-    private LocalDate tradeAt;                  // 거래일
+    private LocalDate tradeAt;
 
-    private String company;                         // 거래처
+    private String company;
 
-    private int sum;                                // 총 금액
+    private int sum;
 
-    @OneToMany(mappedBy = "receipt")
+    @OneToMany(mappedBy = "receipt", orphanRemoval = true)
     private List<Item> itemList = new ArrayList<>();
 
     @OneToOne(mappedBy = "receipt", fetch = FetchType.LAZY)
