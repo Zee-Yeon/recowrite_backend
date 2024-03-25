@@ -15,16 +15,21 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReceiptResponse {
-    private String company;
-    private String tradAt;
-    private int sum;
-    private List<ItemResponse> itemList;
+    private Long receiptId;
 
+    private String company;
+
+    private String tradAt;
+
+    private int sum;
+
+    private List<ItemResponse> itemList;
 
     public static ReceiptResponse dto(Receipt receipt) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         return ReceiptResponse.builder()
+                .receiptId(receipt.getId())
                 .company(receipt.getCompany())
                 .tradAt(receipt.getTradeAt().format(format))
                 .sum(receipt.getSum())
