@@ -3,10 +3,7 @@ package com.write.reco.domain;
 import com.write.reco.domain.constant.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +28,7 @@ public class Receipt extends AuditingFields {
 
     private int sum;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
 
