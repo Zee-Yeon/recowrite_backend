@@ -3,6 +3,7 @@ package com.write.reco.service;
 import com.write.reco.domain.Image;
 import com.write.reco.domain.Item;
 import com.write.reco.domain.Receipt;
+import com.write.reco.domain.constant.Status;
 import com.write.reco.dto.request.ReceiptRequest;
 import com.write.reco.dto.response.ReceiptResponse;
 import com.write.reco.repository.ItemRepository;
@@ -22,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -44,6 +46,7 @@ public class ReceiptService {
                 .company(receiptRequest.getCompany())
                 .tradeAt(LocalDate.parse(receiptRequest.getTradeAt(), formatter))
                 .sum(receiptRequest.getSum())
+                .status(Status.ACTIVE)
                 .build();
 
         receiptRepository.save(receipt);
@@ -61,13 +64,24 @@ public class ReceiptService {
         }
     }
 
-    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
-        com.write.reco.domain.User user = userService.userDetail(auth);
-        String email = user.getEmail();
+//    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
+//        com.write.reco.domain.User user = userService.userDetail(auth);
+//
+//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
+//        return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
+//    }
 
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
-        return receiptRepository.findReceiptByImageByAndCompany(email, company, pageable).map(ReceiptResponse::dto);
+    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
+        com.write.reco.domain.User user = userService.userDetail(auth);
+
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "item");
+        return receiptRepository.findByItem(user, item, pageable).map(ReceiptResponse::dto);
     }
+
+//    public ReceiptResponse getReceipt(Long receiptId) {
+//        Receipt receipt = receiptRepository.findById(receiptId);
+//        return ReceiptResponse.dto(receipt);
+//    }
 
     private Image filename(String fullPath) throws MalformedURLException {
         URL url = new URL(fullPath);

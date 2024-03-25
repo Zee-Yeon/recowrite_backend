@@ -22,7 +22,8 @@ public enum ResponseCode {
     SUCCESS_SAVE_RECEIPT(successCode(), HttpStatus.OK, "영수증이 성공적으로 저장되었습니다."),
 
     // RECEIPT_SUCCESS
-    GET_RECEIPTS(successCode(), HttpStatus.OK, "영수증이 성공적으로 조회되었습니다."),
+    GET_RECEIPT(successCode(), HttpStatus.OK, "영수증 상세보기가 성공적으로 조회되었습니다."),
+    GET_RECEIPTS(successCode(), HttpStatus.OK, "영수증이 전체보기가 성공적으로 조회되었습니다."),
 
     // 400
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
