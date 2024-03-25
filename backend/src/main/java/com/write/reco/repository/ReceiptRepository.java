@@ -1,6 +1,5 @@
 package com.write.reco.repository;
 
-import com.write.reco.domain.Item;
 import com.write.reco.domain.Receipt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
