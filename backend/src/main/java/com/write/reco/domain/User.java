@@ -26,6 +26,8 @@ public class User extends AuditingFields{
 
     private String name;
 
+    private String groups;
+
     @Enumerated(EnumType.STRING)
     @Setter
     private Status status;
