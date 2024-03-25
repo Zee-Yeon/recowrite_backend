@@ -1,5 +1,7 @@
 package com.write.reco.service;
 
+import com.write.reco.advice.exception.CustomException;
+import com.write.reco.advice.response.ResponseCode;
 import com.write.reco.domain.Image;
 import com.write.reco.domain.Item;
 import com.write.reco.domain.Receipt;
@@ -64,34 +66,25 @@ public class ReceiptService {
         }
     }
 
-//    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
-//        com.write.reco.domain.User user = userService.userDetail(auth);
-//
-//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-//        return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
-//    }
-
-//    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
-//        com.write.reco.domain.User user = userService.userDetail(auth);
-//
-//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-//        return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
-//    }
-
-//    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
-//        com.write.reco.domain.User user = userService.userDetail(auth);
-//        String email = user.getEmail();
-//
-//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-//        return receiptRepository.findByItem(item, email, pageable).map(ReceiptResponse::dto);
-//    }
-
-    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
+    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
-        String email = user.getEmail();
+
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
+        return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
+    }
+
+    public Page<ReceiptResponse> searchReceipt2(User auth, String item, Integer page) {
+        com.write.reco.domain.User user = userService.userDetail(auth);
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-        return receiptRepository.findByItem(item, email, pageable).map(ReceiptResponse::dto);
+        return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
+    }
+
+    public Page<ReceiptResponse> searchReceipt3(User auth, Integer page) {
+        com.write.reco.domain.User user = userService.userDetail(auth);
+
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
+        return receiptRepository.findByAll(user, pageable).map(ReceiptResponse::dto);
     }
 
 
@@ -106,4 +99,21 @@ public class ReceiptService {
         String filename = new File(path).getName();
         return imageService.checkUploader(filename);
     }
+
+    public ReceiptResponse getReceipt(Long receiptId) {
+        Receipt receipt = findByReceiptId(receiptId);
+        return ReceiptResponse.dto(receipt);
+    }
+
+    public void deleteReceipt(User auth, Long receiptId) {
+        Receipt receipt = findByReceiptId(receiptId);
+        receipt.setStatus(Status.DELETED);
+    }
+
+    public Receipt findByReceiptId(Long receiptId) {
+        return receiptRepository.findById(receiptId)
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_RECEIPT));
+    }
+
+
 }
