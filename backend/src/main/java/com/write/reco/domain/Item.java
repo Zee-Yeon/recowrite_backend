@@ -26,7 +26,7 @@ public class Item {
 
     private int price;          // 금액
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
 }
