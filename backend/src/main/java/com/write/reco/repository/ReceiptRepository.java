@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
 
-    @Query("select r from Receipt r where r.image.user.email = :email and r.company = :company")
+    @Query("select r from Receipt r where r.image.user.email = :email and r.company = :company and r.status = 'ACTIVE'")
     Page<Receipt> findReceiptByImageByAndCompany(String email, String company, Pageable pageable);
 
 }
