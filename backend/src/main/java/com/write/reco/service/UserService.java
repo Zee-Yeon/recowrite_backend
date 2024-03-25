@@ -35,6 +35,7 @@ public class UserService {
                 .email(userRequest.getEmail())
                 .password(encoder.encode(userRequest.getPassword()))
                 .name(userRequest.getName())
+                .groups(userRequest.getGroups())
                 .status(Status.ACTIVE)
                 .build();
 
