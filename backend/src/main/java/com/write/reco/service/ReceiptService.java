@@ -67,16 +67,33 @@ public class ReceiptService {
 //    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
 //        com.write.reco.domain.User user = userService.userDetail(auth);
 //
-//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
+//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
 //        return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
+//    }
+
+//    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
+//        com.write.reco.domain.User user = userService.userDetail(auth);
+//
+//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
+//        return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
+//    }
+
+//    public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
+//        com.write.reco.domain.User user = userService.userDetail(auth);
+//        String email = user.getEmail();
+//
+//        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
+//        return receiptRepository.findByItem(item, email, pageable).map(ReceiptResponse::dto);
 //    }
 
     public Page<ReceiptResponse> searchReceipt(User auth, String item, Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
+        String email = user.getEmail();
 
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "item");
-        return receiptRepository.findByItem(user, item, pageable).map(ReceiptResponse::dto);
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
+        return receiptRepository.findByItem(item, email, pageable).map(ReceiptResponse::dto);
     }
+
 
 //    public ReceiptResponse getReceipt(Long receiptId) {
 //        Receipt receipt = receiptRepository.findById(receiptId);

@@ -40,6 +40,15 @@ public class ReceiptController {
 //    }
 
     // 물품명
+//    @GetMapping
+//    public ResponseEntity<?> searchReceipt(@AuthenticationPrincipal User auth,
+//                                           @RequestParam(required = false) String item,
+//                                           @RequestParam(required = false, defaultValue = "1", value = "page") Integer page) {
+//        Page<ReceiptResponse> receipt = receiptService.searchReceipt(auth, item, page);
+//
+//        return new ResponseEntity<>(Response.create(GET_RECEIPTS, receipt), GET_RECEIPTS.getHttpStatus());
+//    }
+
     @GetMapping
     public ResponseEntity<?> searchReceipt(@AuthenticationPrincipal User auth,
                                            @RequestParam(required = false) String item,
