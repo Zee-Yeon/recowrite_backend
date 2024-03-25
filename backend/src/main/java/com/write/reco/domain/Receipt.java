@@ -1,5 +1,6 @@
 package com.write.reco.domain;
 
+import com.write.reco.domain.constant.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,9 @@ public class Receipt extends AuditingFields {
     private String company;
 
     private int sum;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(mappedBy = "receipt", orphanRemoval = true)
     private List<Item> itemList = new ArrayList<>();
