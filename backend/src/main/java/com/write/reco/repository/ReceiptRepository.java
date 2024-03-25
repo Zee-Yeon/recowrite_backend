@@ -16,8 +16,9 @@ public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
     @Query("select r from Receipt r where r.image.user = :user and r.company = :company and r.status = 'ACTIVE'")
     Page<Receipt> findByCompany(@Param("user") User user, @Param("company") String company, Pageable pageable);
 
-    @Query("SELECT r FROM Receipt r JOIN r.itemList i WHERE i.item = :item AND r.image.user.email = :email AND r.status = 'ACTIVE'")
-    Page<Receipt> findByItem(@Param("item") String item, @Param("user") String email, Pageable pageable);
+    @Query("SELECT r FROM Receipt r JOIN r.itemList i WHERE i.item = :item AND r.image.user = :user AND r.status = 'ACTIVE'")
+    Page<Receipt> findByItem(@Param("item") String item, @Param("user") User user, Pageable pageable);
 
-    Page<Receipt> findAll(Pageable pageable);
+    @Query("SELECT r FROM Receipt r where r.image.user = :user and r.status = 'ACTIVE'")
+    Page<Receipt> findByAll(@Param("user") User user, Pageable pageable);
 }
