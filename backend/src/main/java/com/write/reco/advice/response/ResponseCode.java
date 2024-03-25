@@ -24,6 +24,7 @@ public enum ResponseCode {
     // RECEIPT_SUCCESS
     GET_RECEIPT(successCode(), HttpStatus.OK, "영수증 상세보기가 성공적으로 조회되었습니다."),
     GET_RECEIPTS(successCode(), HttpStatus.OK, "영수증이 전체보기가 성공적으로 조회되었습니다."),
+    SUCCESS_DELETE_RECEIPT(successCode(), HttpStatus.OK, "영수증이 성공적으로 삭제되었습니다."),
 
     // 400
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
@@ -39,6 +40,7 @@ public enum ResponseCode {
     // 404 NOT_FOUND (찾을 수 없는 리소스)
     NOT_FOUND_USER(404, HttpStatus.NOT_FOUND, "존재하지 않는 회원 정보입니다."),
     NOT_FOUND_FILE(404, HttpStatus.NOT_FOUND, "파일이 존재하지 않습니다."),
+    NOT_FOUND_RECEIPT(404, HttpStatus.NOT_FOUND, "영수증이 존재하지 않습니다."),
 
 
     // 409 (CONFLICT 중복된 리소스)
