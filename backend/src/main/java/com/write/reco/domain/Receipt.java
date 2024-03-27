@@ -26,13 +26,15 @@ public class Receipt extends AuditingFields {
 
     private String company;
 
+    @Setter
     private int sum;
 
     @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "receipt", orphanRemoval = true)
+    @Setter
+    @OneToMany(mappedBy = "receipt")
     private List<Item> itemList = new ArrayList<>();
 
     @OneToOne(mappedBy = "receipt", fetch = FetchType.LAZY)
