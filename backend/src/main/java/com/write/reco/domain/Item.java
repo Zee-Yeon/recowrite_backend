@@ -1,10 +1,7 @@
 package com.write.reco.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
@@ -18,15 +15,20 @@ public class Item {
     @Column(name = "item_id")
     private Long id;
 
-    private String item;        // 상품명
+    @Setter
+    private String item;
 
-    private int unitPrice;      // 단가
+    @Setter
+    private int unitPrice;
 
-    private int quantity;       // 수량
+    @Setter
+    private int quantity;
 
-    private int price;          // 금액
+    @Setter
+    private int price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Setter
+    @ManyToOne
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
 }
