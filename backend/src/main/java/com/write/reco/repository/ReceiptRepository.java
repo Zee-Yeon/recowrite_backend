@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
@@ -21,4 +22,7 @@ public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
 
     @Query("SELECT r FROM Receipt r where r.image.user = :user and r.status = 'ACTIVE'")
     Page<Receipt> findByAll(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT r FROM Receipt r where r.image.user = :user and r.createdAt BETWEEN :start AND :end AND r.status = 'ACTIVE'")
+    Page<Receipt> findByDate(@Param("user") User user, @Param("start") LocalDate start,  @Param("end") LocalDate end, Pageable pageable);
 }
