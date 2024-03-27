@@ -7,9 +7,11 @@ import com.write.reco.domain.Item;
 import com.write.reco.domain.Receipt;
 import com.write.reco.domain.constant.Status;
 import com.write.reco.dto.request.ReceiptRequest;
+import com.write.reco.dto.request.ReceiptUpdate;
 import com.write.reco.dto.response.ReceiptResponse;
 import com.write.reco.repository.ItemRepository;
 import com.write.reco.repository.ReceiptRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 @Service
@@ -80,18 +84,86 @@ public class ReceiptService {
         return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
     }
 
-    public Page<ReceiptResponse> searchReceipt3(User auth, Integer page) {
+    public Page<ReceiptResponse> searchReceipt3(User auth, String start, String end, Integer page) {
+        com.write.reco.domain.User user = userService.userDetail(auth);
+
+        LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
+        return receiptRepository.findByDate(user, startDate, endDate, pageable).map(ReceiptResponse::dto);
+    }
+
+    public Page<ReceiptResponse> searchReceipt4(User auth, Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
         return receiptRepository.findByAll(user, pageable).map(ReceiptResponse::dto);
     }
 
+    public ReceiptResponse getReceipt(Long receiptId) {
+        Receipt receipt = findByReceiptId(receiptId);
+        return ReceiptResponse.dto(receipt);
+    }
 
-//    public ReceiptResponse getReceipt(Long receiptId) {
-//        Receipt receipt = receiptRepository.findById(receiptId);
-//        return ReceiptResponse.dto(receipt);
+//    public ReceiptResponse updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
+//        Receipt receipt = findByReceiptId(receiptId);
+//        receipt.setSum(receiptUpdate.getSum());
+//
+//
+//
+//        List<Item> updatedItems = new ArrayList<>();
+//        for (ReceiptUpdate.Items updateItem : receiptUpdate.getItemList()) {
+//            Item o = new Item();
+//            o.setItem(updateItem.getItem());
+//            o.setUnitPrice(updateItem.getUnitPrice());
+//            o.setQuantity(updateItem.getQuantity());
+//            o.setPrice(updateItem.getPrice());
+//            o.setReceipt(receipt);
+//            itemRepository.save(o);
+//
+//            updatedItems.add(o);
+//        }
+//        System.out.println("updatedItems = " + updatedItems.get(0).getItem());
+//        receipt.setItemList(updatedItems);
+//
+//        Receipt save = receiptRepository.save(receipt);
+//        ReceiptResponse receiptEdit = ReceiptResponse.dto(save);
+//
+//        return receiptEdit;
 //    }
+
+    public ReceiptResponse updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
+        Receipt receipt = findByReceiptId(receiptId);
+        receipt.setSum(receiptUpdate.getSum());
+
+        receipt.getItemList().forEach(item -> itemRepository.deleteById(item.getId()));
+        List<Item> updatedItems = new ArrayList<>();
+
+        if (receiptUpdate.getItemList() != null) {
+            for (ReceiptUpdate.Items updateItem : receiptUpdate.getItemList()) {
+                Item o = new Item();
+                o.setItem(updateItem.getItem());
+                o.setUnitPrice(updateItem.getUnitPrice());
+                o.setQuantity(updateItem.getQuantity());
+                o.setPrice(updateItem.getPrice());
+                o.setReceipt(receipt);
+                itemRepository.save(o);
+
+                updatedItems.add(o);
+            }
+        }
+        System.out.println("updatedItems = " + updatedItems.get(0).getItem());
+        receipt.setItemList(updatedItems);
+        Receipt save = receiptRepository.save(receipt);
+
+        return ReceiptResponse.dto(save);
+    }
+
+    public void deleteReceipt(User auth, Long receiptId) {
+        Receipt receipt = findByReceiptId(receiptId);
+        receipt.setStatus(Status.DELETED);
+    }
 
     private Image filename(String fullPath) throws MalformedURLException {
         URL url = new URL(fullPath);
@@ -100,20 +172,8 @@ public class ReceiptService {
         return imageService.checkUploader(filename);
     }
 
-    public ReceiptResponse getReceipt(Long receiptId) {
-        Receipt receipt = findByReceiptId(receiptId);
-        return ReceiptResponse.dto(receipt);
-    }
-
-    public void deleteReceipt(User auth, Long receiptId) {
-        Receipt receipt = findByReceiptId(receiptId);
-        receipt.setStatus(Status.DELETED);
-    }
-
-    public Receipt findByReceiptId(Long receiptId) {
+    private Receipt findByReceiptId(Long receiptId) {
         return receiptRepository.findById(receiptId)
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_RECEIPT));
     }
-
-
 }

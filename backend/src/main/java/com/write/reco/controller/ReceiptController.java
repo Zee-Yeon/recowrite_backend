@@ -1,7 +1,9 @@
 package com.write.reco.controller;
 
 import com.write.reco.advice.response.Response;
+import com.write.reco.domain.Receipt;
 import com.write.reco.dto.request.ReceiptRequest;
+import com.write.reco.dto.request.ReceiptUpdate;
 import com.write.reco.dto.response.ReceiptResponse;
 import com.write.reco.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import static com.write.reco.advice.response.ResponseCode.*;
 
@@ -54,10 +57,22 @@ public class ReceiptController {
     }
 
     @Transactional(readOnly = true)
+    @GetMapping("/date")
+    public ResponseEntity<?> searchReceipt3(@AuthenticationPrincipal User auth,
+                                            @RequestParam(required = false) String start,
+                                            @RequestParam(required = false) String end,
+                                            @RequestParam(required = false, defaultValue = "1", value = "page") Integer page) {
+        Page<ReceiptResponse> receipt = receiptService.searchReceipt3(auth, start, end, page);
+
+        return new ResponseEntity<>(Response.create(GET_RECEIPTS, receipt), GET_RECEIPTS.getHttpStatus());
+    }
+
+    // 전체
+    @Transactional(readOnly = true)
     @GetMapping("/all")
     public ResponseEntity<?> searchReceipt3(@AuthenticationPrincipal User auth,
                                            @RequestParam(required = false, defaultValue = "1", value = "page") Integer page) {
-        Page<ReceiptResponse> receipt = receiptService.searchReceipt3(auth, page);
+        Page<ReceiptResponse> receipt = receiptService.searchReceipt4(auth, page);
 
         return new ResponseEntity<>(Response.create(GET_RECEIPTS, receipt), GET_RECEIPTS.getHttpStatus());
     }
@@ -70,11 +85,17 @@ public class ReceiptController {
         return new ResponseEntity<>(Response.create(GET_RECEIPT, receipt), GET_RECEIPT.getHttpStatus());
     }
 
+    // 영수증 수정
+    @PutMapping("/{receiptId}")
+    public ResponseEntity<?> updateReceipt(@PathVariable("receiptId") Long receiptId, @RequestBody ReceiptUpdate receiptUpdate) {
+        ReceiptResponse receipt = receiptService.updateReceipt(receiptId, receiptUpdate);
+        return new ResponseEntity<>(Response.create(UPDATE_RECEIPT, null), UPDATE_RECEIPT.getHttpStatus());
+    }
+
     // 영수증 삭제
     @DeleteMapping("/{receiptId}")
     public ResponseEntity<?> deleteReceipt(@AuthenticationPrincipal User auth, @PathVariable("receiptId") Long receiptId) {
         receiptService.deleteReceipt(auth, receiptId);
         return new ResponseEntity<>(Response.create(SUCCESS_DELETE_RECEIPT, null), SUCCESS_DELETE_RECEIPT.getHttpStatus());
     }
-
 }
