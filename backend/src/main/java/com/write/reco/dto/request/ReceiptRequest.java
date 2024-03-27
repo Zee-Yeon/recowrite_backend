@@ -1,10 +1,7 @@
 package com.write.reco.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -26,6 +23,7 @@ public class ReceiptRequest {
 
     @Getter
     public static class Items {
+        private Long itemId;
         private String item;
         private int unitPrice;
         private int quantity;
