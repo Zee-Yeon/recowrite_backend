@@ -14,15 +14,21 @@ import java.util.List;
 
 public interface ReceiptRepository extends JpaRepository<Receipt, Long> {
 
-    @Query("select r from Receipt r where r.image.user = :user and r.company = :company and r.status = 'ACTIVE'")
+    @Query("SELECT r FROM Receipt r WHERE r.image.user = :user AND r.company = :company AND r.status = 'ACTIVE'")
     Page<Receipt> findByCompany(@Param("user") User user, @Param("company") String company, Pageable pageable);
 
-    @Query("SELECT r FROM Receipt r JOIN r.itemList i WHERE i.item = :item AND r.image.user = :user AND r.status = 'ACTIVE'")
+    @Query("SELECT r FROM Receipt r JOIN r.itemList i WHERE i.item LIKE %:item% AND r.image.user = :user AND r.status = 'ACTIVE'")
     Page<Receipt> findByItem(@Param("item") String item, @Param("user") User user, Pageable pageable);
 
-    @Query("SELECT r FROM Receipt r where r.image.user = :user and r.status = 'ACTIVE'")
+    @Query("SELECT r FROM Receipt r WHERE r.image.user = :user AND r.status = 'ACTIVE'")
     Page<Receipt> findByAll(@Param("user") User user, Pageable pageable);
 
-    @Query("SELECT r FROM Receipt r where r.image.user = :user and r.createdAt BETWEEN :start AND :end AND r.status = 'ACTIVE'")
+    @Query("SELECT r FROM Receipt r WHERE r.image.user = :user AND r.tradeAt BETWEEN :start AND :end AND r.status = 'ACTIVE'")
     Page<Receipt> findByDate(@Param("user") User user, @Param("start") LocalDate start,  @Param("end") LocalDate end, Pageable pageable);
+
+    @Query("SELECT r FROM Receipt r WHERE r.image.user = :user AND r.company = :company AND r.tradeAt BETWEEN :start AND :end AND r.status = 'ACTIVE'")
+    Page<Receipt> findByCompanyAndDate(@Param("user") User user, @Param("company") String company, @Param("start") LocalDate start,  @Param("end") LocalDate end, Pageable pageable);
+
+    @Query("SELECT r FROM Receipt r JOIN r.itemList i WHERE i.item LIKE %:item% AND r.image.user = :user AND r.tradeAt BETWEEN :start AND :end AND r.status = 'ACTIVE'")
+    Page<Receipt> findByItemAndDate(@Param("user") User user, @Param("item") String item, @Param("start") LocalDate start,  @Param("end") LocalDate end, Pageable pageable);
 }
