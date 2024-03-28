@@ -70,31 +70,49 @@ public class ReceiptService {
         }
     }
 
-    public Page<ReceiptResponse> searchReceipt(User auth, String company, Integer page) {
+    public Page<ReceiptResponse> searchCompany(User auth, String company, String start, String end ,Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
-        Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "company");
-        return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
-    }
-
-    public Page<ReceiptResponse> searchReceipt2(User auth, String item, Integer page) {
-        com.write.reco.domain.User user = userService.userDetail(auth);
+        LocalDate startDate = start != null ? LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        LocalDate endDate = end != null ? LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-        return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
+
+        Page<ReceiptResponse> receipt = null;
+
+        if (company != null && startDate != null) {
+            return receiptRepository.findByCompanyAndDate(user, company, startDate, endDate, pageable).map(ReceiptResponse::dto);
+        } else if (company != null) {
+            return receiptRepository.findByCompany(user, company, pageable).map(ReceiptResponse::dto);
+        } else if (startDate != null) {
+            return receiptRepository.findByDate(user, startDate, endDate, pageable).map(ReceiptResponse::dto);
+        } else {
+            return receiptRepository.findByAll(user, pageable).map(ReceiptResponse::dto);
+        }
     }
 
-    public Page<ReceiptResponse> searchReceipt3(User auth, String start, String end, Integer page) {
+    public Page<ReceiptResponse> searchItem(User auth, String item, String start, String end , Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
-        LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate startDate = start != null ? LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        LocalDate endDate = end != null ? LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+
+        Page<ReceiptResponse> receipt = null;
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
-        return receiptRepository.findByDate(user, startDate, endDate, pageable).map(ReceiptResponse::dto);
+
+        if (item != null && startDate != null) {
+            return receiptRepository.findByItemAndDate(user, item, startDate, endDate, pageable).map(ReceiptResponse::dto);
+        } else if (item != null) {
+            return receiptRepository.findByItem(item, user, pageable).map(ReceiptResponse::dto);
+        } else if (startDate != null) {
+            return receiptRepository.findByDate(user, startDate, endDate, pageable).map(ReceiptResponse::dto);
+        } else {
+            return receiptRepository.findByAll(user, pageable).map(ReceiptResponse::dto);
+        }
     }
 
-    public Page<ReceiptResponse> searchReceipt4(User auth, Integer page) {
+    public Page<ReceiptResponse> searchAll(User auth, Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
@@ -106,34 +124,7 @@ public class ReceiptService {
         return ReceiptResponse.dto(receipt);
     }
 
-//    public ReceiptResponse updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
-//        Receipt receipt = findByReceiptId(receiptId);
-//        receipt.setSum(receiptUpdate.getSum());
-//
-//
-//
-//        List<Item> updatedItems = new ArrayList<>();
-//        for (ReceiptUpdate.Items updateItem : receiptUpdate.getItemList()) {
-//            Item o = new Item();
-//            o.setItem(updateItem.getItem());
-//            o.setUnitPrice(updateItem.getUnitPrice());
-//            o.setQuantity(updateItem.getQuantity());
-//            o.setPrice(updateItem.getPrice());
-//            o.setReceipt(receipt);
-//            itemRepository.save(o);
-//
-//            updatedItems.add(o);
-//        }
-//        System.out.println("updatedItems = " + updatedItems.get(0).getItem());
-//        receipt.setItemList(updatedItems);
-//
-//        Receipt save = receiptRepository.save(receipt);
-//        ReceiptResponse receiptEdit = ReceiptResponse.dto(save);
-//
-//        return receiptEdit;
-//    }
-
-    public ReceiptResponse updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
+    public void updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
         Receipt receipt = findByReceiptId(receiptId);
         receipt.setSum(receiptUpdate.getSum());
 
@@ -153,11 +144,8 @@ public class ReceiptService {
                 updatedItems.add(o);
             }
         }
-        System.out.println("updatedItems = " + updatedItems.get(0).getItem());
         receipt.setItemList(updatedItems);
-        Receipt save = receiptRepository.save(receipt);
-
-        return ReceiptResponse.dto(save);
+        receiptRepository.save(receipt);
     }
 
     public void deleteReceipt(User auth, Long receiptId) {
