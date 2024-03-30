@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.UniqueElements;
 public class UserEmailRequest {
 
     @NotNull
-    @UniqueElements
     @Email(message = "이메일 형식이 아닙니다.")
     private String email;
 }
