@@ -73,8 +73,8 @@ public class ReceiptService {
     public Page<ReceiptResponse> searchCompany(User auth, String company, String start, String end ,Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
-        LocalDate startDate = start != null ? LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
-        LocalDate endDate = end != null ? LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        LocalDate startDate = parseDate(start);
+        LocalDate endDate = parseDate(end);
 
         Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "id");
 
@@ -94,8 +94,8 @@ public class ReceiptService {
     public Page<ReceiptResponse> searchItem(User auth, String item, String start, String end , Integer page) {
         com.write.reco.domain.User user = userService.userDetail(auth);
 
-        LocalDate startDate = start != null ? LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
-        LocalDate endDate = end != null ? LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
+        LocalDate startDate = parseDate(start);
+        LocalDate endDate = parseDate(end);
 
         Page<ReceiptResponse> receipt = null;
 
@@ -110,6 +110,10 @@ public class ReceiptService {
         } else {
             return receiptRepository.findByAll(user, pageable).map(ReceiptResponse::dto);
         }
+    }
+
+    public LocalDate parseDate(String date) {
+        return date != null ? LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
     }
 
     public Page<ReceiptResponse> searchAll(User auth, Integer page) {
