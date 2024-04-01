@@ -42,4 +42,5 @@ public class ReceiptRequest {
         @Range(min = 0, max = 100000000)
         private int price;
     }
+
 }

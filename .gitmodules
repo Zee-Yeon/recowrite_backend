@@ -1,0 +1,3 @@
+[submodule "backend/k5_AIProject"]
+	path = backend/k5_AIProject
+	url = https://github.com/sonenhur/k5_AIProject.git
