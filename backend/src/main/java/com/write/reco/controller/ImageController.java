@@ -32,7 +32,6 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(@AuthenticationPrincipal User auth, @Valid @RequestParam("file")MultipartFile file) throws IOException {
         ResponseEntity<JsonNode> entity = imageService.uploadImage(auth, file);
-        log.info("entity={}", entity.getBody());
         return new ResponseEntity<>(Response.create(SUCCESS_RECEIPT_OCR, entity), SUCCESS_RECEIPT_OCR.getHttpStatus());
     }
 }
