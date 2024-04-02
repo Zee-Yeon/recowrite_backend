@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table
 public class Image extends AuditingFields {
 
     @Id
