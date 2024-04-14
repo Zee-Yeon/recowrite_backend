@@ -29,10 +29,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Transactional(readOnly = true)
 public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
@@ -40,6 +39,7 @@ public class ReceiptService {
     private final ItemRepository itemRepository;
     private final UserService userService;
 
+    @Transactional
     public void saveReceipt(User auth, ReceiptRequest receiptRequest) throws MalformedURLException {
 
         Image image = filename(receiptRequest.getImage());
@@ -126,6 +126,7 @@ public class ReceiptService {
         return ReceiptResponse.dto(receipt);
     }
 
+    @Transactional
     public void updateReceipt(Long receiptId, ReceiptUpdate receiptUpdate) {
         Receipt receipt = findByReceiptId(receiptId);
         receipt.setSum(receiptUpdate.getSum());
@@ -150,6 +151,7 @@ public class ReceiptService {
         receiptRepository.save(receipt);
     }
 
+    @Transactional
     public void deleteReceipt(User auth, Long receiptId) {
         Receipt receipt = findByReceiptId(receiptId);
         receipt.setStatus(Status.DELETED);
