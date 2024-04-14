@@ -34,7 +34,7 @@ public class Receipt extends AuditingFields {
     private Status status;
 
     @Setter
-    @OneToMany(mappedBy = "receipt")
+    @OneToMany(mappedBy = "receipt", fetch = FetchType.LAZY)
     private List<Item> itemList = new ArrayList<>();
 
     @OneToOne(mappedBy = "receipt", fetch = FetchType.LAZY)
